@@ -1,0 +1,23 @@
+<%= form_with(model: [:admin, user], local: true) do |f| %>
+  <div class="mb-3">
+    <%= f.label :email, class: "form-label" %>
+    <%= f.email_field :email, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :password, class: "form-label" %>
+    <%= f.password_field :password, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :password_confirmation, class: "form-label" %>
+    <%= f.password_field :password_confirmation, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :role, class: "form-label" %>
+    <%= f.select :role, [['Admin', 'admin'], ['User', 'user']], {}, class: "form-select" %>
+  </div>
+
+  <%= f.submit class: "btn btn-primary" %>
+<% end %>

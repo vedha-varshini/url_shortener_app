@@ -1,0 +1,7 @@
+<%= form_with model: shortened_url, url: shortened_urls_path, local: true do |form| %>
+  <div class="mb-3">
+    <%= form.label :original_url, "Enter URL to shorten" %>
+    <%= form.text_field :original_url, class: "form-control", placeholder: "https://example.com", required: true %>
+  </div>
+  <%= form.submit "Shorten URL", class: "btn btn-primary" %>
+<% end %>

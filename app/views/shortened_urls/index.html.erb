@@ -1,0 +1,31 @@
+<h2>Create a Shortened URL</h2>
+
+<!-- Form to create new shortened URL -->
+<%= render 'form', shortened_url: ShortenedUrl.new %>
+
+<!-- Show shortened URL history if any -->
+<% if @shortened_urls.any? %>
+  <h3 class="mt-5">Your URL History</h3>
+  <table class="table table-bordered mt-3">
+    <thead class="table-dark">
+      <tr>
+        <th>Original URL</th>
+        <th>Short URL</th>
+        <th>Valid Till</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @shortened_urls.each do |url| %>
+        <tr>
+          <td><%= url.original_url %></td>
+          <td>
+            <%= link_to short_url(short_code: url.short_code), short_url(short_code: url.short_code), target: "_blank" %>
+          </td>
+          <td><%= (url.created_at + 2.days).strftime('%b %d, %Y %I:%M %p') %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-muted mt-4">You haven't shortened any URLs yet.</p>
+<% end %>

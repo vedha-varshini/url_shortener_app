@@ -1,0 +1,22 @@
+<h2>Shortened URLs by <%= @user.email %></h2>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Original URL</th>
+      <th>Shortened URL</th>
+      <th>Created At</th>
+      <th>Valid Till</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @shortened_urls.each do |url| %>
+      <tr>
+        <td><%= url.original_url %></td>
+        <td><%= link_to short_url(short_code: url.short_code), short_url(short_code: url.short_code), target: "_blank" %></td>
+        <td><%= url.created_at.strftime('%d-%m-%Y %H:%M') %></td>
+        <td><%= (url.created_at + 48.hours).strftime('%d-%m-%Y %H:%M') %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
