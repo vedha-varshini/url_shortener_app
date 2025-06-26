@@ -1,16 +1,18 @@
 class User < ApplicationRecord
-  
-  validates :role, inclusion: { in: %w[admin user], message: "%{value} is not a valid role" }
+  has_secure_password
 
-  has_many :shortened_urls
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+enum :role, { user: 0, admin: 1 }
+  validates :email,
+            presence: true,
+            uniqueness: true,
+            format: { with: URI::MailTo::EMAIL_REGEXP }
 
-  def admin?
-    role == 'admin'
-  end
-
-  def user?
-    role == 'user'
-  end
+  validates :password,
+            presence: true,
+            length: { minimum: 8 },
+            format: {
+              with: /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])/,
+              message: "must include at least one lowercase letter, one uppercase letter, one digit, and one special character"
+            },
+            if: -> { new_record? || !password.nil? }
 end

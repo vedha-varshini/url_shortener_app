@@ -61,5 +61,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
-#Gemfile 
-gem 'devise'
+#Gemfile for authorisation and authentication
+#gem 'devise'
+
+gem 'bcrypt', '~> 3.1.7'

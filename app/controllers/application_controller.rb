@@ -1,18 +1,19 @@
-# app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
-  before_action :authenticate_user!
+  helper_method :current_user, :user_signed_in?
 
-  protected
-
-  def after_sign_in_path_for(resource)
-    if resource.admin?
-      admin_users_path
-    else
-      shortened_urls_path
-    end
+  def current_user
+    @current_user ||= User.find_by(id: session[:user_id])
   end
 
-  def after_sign_out_path_for(resource_or_scope)
-    new_user_session_path
+  def user_signed_in?
+    current_user.present?
+  end
+
+  def authenticate_user!
+    redirect_to login_path, alert: 'You must be logged in to access this page.' unless user_signed_in?
+  end
+
+  def admin_only
+    redirect_to shortened_urls_path, alert: 'Access denied!' unless current_user&.admin?
   end
 end
