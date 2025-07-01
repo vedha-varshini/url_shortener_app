@@ -1,6 +1,6 @@
 ## Url Shortener App
 
-This is a URL Shortening web application built with Ruby on Rails and PostgreSQL. I
+This is a URL Shortening web application built with Ruby on Rails and PostgreSQL.
 
 ### User Functionality
 
