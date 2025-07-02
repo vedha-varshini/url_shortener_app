@@ -2,27 +2,30 @@
 
 <%= link_to "Create New User", new_admin_user_path, class: "btn btn-primary mb-3" %>
 
-<table class="table table-striped">
-  <thead class="table-dark">
-    <tr>
-      <th>Email</th>
-      <th>Role</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @users.each do |user| %>
+<%# Cache the table fragment using the latest updated_at timestamp as the key dependency %>
+<% cache(["users_table", @users.maximum(:updated_at).to_i]) do %>
+  <table class="table table-striped">
+    <thead class="table-dark">
       <tr>
-        <td><%= user.email %></td>
-        <td><%= user.role.capitalize %></td>
-        <td>
-          <div class="d-flex gap-2">
-            <%= link_to 'Edit', edit_admin_user_path(user), class: 'btn btn-warning btn-sm' %>
-            <%= link_to 'Delete', confirm_delete_admin_user_path(user), class: 'btn btn-danger btn-sm' %>
-            <%= link_to 'View URLs', urls_admin_user_path(user), class: 'btn btn-info btn-sm' %>
-          </div>
-        </td>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Actions</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td><%= user.email %></td>
+          <td><%= user.role.capitalize %></td>
+          <td>
+            <div class="d-flex gap-2">
+              <%= link_to 'Edit', edit_admin_user_path(user), class: 'btn btn-warning btn-sm' %>
+              <%= link_to 'Delete', confirm_delete_admin_user_path(user), class: 'btn btn-danger btn-sm' %>
+              <%= link_to 'View URLs', urls_admin_user_path(user), class: 'btn btn-info btn-sm' %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

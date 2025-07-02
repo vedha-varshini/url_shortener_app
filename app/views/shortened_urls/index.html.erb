@@ -1,16 +1,15 @@
-<h2>Create a Shortened URL</h2>
+<h2>Your Shortened URLs</h2>
 
-<!-- Form to create new shortened URL -->
-<%= render 'form', shortened_url: ShortenedUrl.new %>
+<%= link_to 'Shorten New URL', new_shortened_url_path, class: 'btn btn-success mb-3' %>
 
-<!-- Show shortened URL history if any -->
-<% if @shortened_urls.any? %>
-  <h3 class="mt-5">Your URL History</h3>
-  <table class="table table-bordered mt-3">
+<% cache(["shortened_urls", current_user.id, current_user.shortened_urls.maximum(:updated_at).to_i]) do %>
+  <table class="table table-striped">
     <thead class="table-dark">
       <tr>
         <th>Original URL</th>
-        <th>Short URL</th>
+        <th>Short Code</th>
+        <th>Created At</th>
+        <th>Actions</th>
         <th>Valid Till</th>
       </tr>
     </thead>
@@ -18,14 +17,14 @@
       <% @shortened_urls.each do |url| %>
         <tr>
           <td><%= url.original_url %></td>
+          <td><%= url.short_code %></td>
+          <td><%= url.created_at.strftime("%Y-%m-%d %H:%M") %></td>
           <td>
-            <%= link_to short_url(short_code: url.short_code), short_url(short_code: url.short_code), target: "_blank" %>
+            <%= link_to 'Open', short_path(url.short_code), class: 'btn btn-outline-primary btn-sm', target: "_blank" %>
           </td>
           <td><%= (url.created_at + 2.days).strftime('%b %d, %Y %I:%M %p') %></td>
         </tr>
       <% end %>
     </tbody>
   </table>
-<% else %>
-  <p class="text-muted mt-4">You haven't shortened any URLs yet.</p>
 <% end %>

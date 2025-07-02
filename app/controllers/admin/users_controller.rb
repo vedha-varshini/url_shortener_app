@@ -4,7 +4,9 @@ class Admin::UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy, :urls]
 
   def index
-    @users = User.where(role: 'user')
+    @users = Rails.cache.fetch('all_users', expires_in: 10.minutes) do
+      User.where(role: :user).order(created_at: :desc).to_a
+    end
   end
 
   def new
@@ -14,29 +16,28 @@ class Admin::UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      redirect_to admin_users_path, notice: "User created successfully."
+      Rails.cache.delete('all_users')  # Invalidate cache
+      redirect_to admin_users_path, notice: "User created."
     else
       render :new
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @user.update(user_params)
-      redirect_to admin_users_path, notice: "User updated successfully."
+      Rails.cache.delete('all_users')  # Invalidate cache
+      redirect_to admin_users_path, notice: "User updated."
     else
       render :edit
     end
   end
 
   def destroy
-    if @user.destroy
-      redirect_to admin_users_path, notice: "User deleted successfully."
-    else
-      redirect_to admin_users_path, alert: "Failed to delete user."
-    end
+    @user.destroy
+    Rails.cache.delete('all_users')  # Invalidate cache
+    redirect_to admin_users_path, notice: "User deleted."
   end
 
   def urls
@@ -54,7 +55,7 @@ class Admin::UsersController < ApplicationController
   private
 
   def ensure_admin
-    redirect_to authenticated_root_path, alert: "Access denied!" unless current_user.admin?
+    redirect_to shortened_urls_path, alert: "Access denied!" unless current_user&.admin?
   end
 
   def set_user
